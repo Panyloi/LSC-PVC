@@ -1,0 +1,23 @@
+# populate-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: populate-web-content
+spec:
+  template:
+    spec:
+      containers:
+      - name: writer
+        image: busybox
+        command: ["/bin/sh", "-c"]
+        args:
+          - echo "<h1>LSC NFC testing!</h1>" > /mnt/nfs/index.html;
+        volumeMounts:
+        - name: web-content
+          mountPath: /mnt/nfs
+      restartPolicy: Never
+      volumes:
+      - name: web-content
+        persistentVolumeClaim:
+          claimName: nfs-pvc
+  backoffLimit: 1
